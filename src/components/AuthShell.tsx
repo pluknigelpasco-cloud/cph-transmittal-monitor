@@ -193,8 +193,8 @@ export default function AuthShell({ onLoginSuccess }: AuthShellProps) {
               </div>
             </div>
 
-            {/* The Embedded Interactive Google Map (Large & Draggable) */}
-            <div className="relative w-full h-64 sm:h-72 lg:h-80 rounded-2xl overflow-hidden border border-white/15 shadow-inner group">
+            {/* The Embedded Interactive Google Map (Extra Large & Immersive) */}
+            <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] xl:h-[540px] rounded-2xl overflow-hidden border border-white/15 shadow-inner group">
               <iframe
                 title="Cebu Provincial Hospital Balamban Interactive Map"
                 src={mapEmbedUrl}
