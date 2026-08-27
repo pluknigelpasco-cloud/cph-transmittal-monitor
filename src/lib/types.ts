@@ -1,4 +1,6 @@
 export type UserRole = 'ADMIN' | 'STAFF' | 'VIEWER';
+export type ModuleType = 'RTH' | 'DENIED' | 'INPATIENT' | 'HD';
+export type DeadlineStatus = 'SAFE' | 'WARNING' | 'CRITICAL' | 'EXPIRED' | 'COMPLETED' | 'NO_DATE';
 
 export interface AppUser {
   id: string;
@@ -8,89 +10,9 @@ export interface AppUser {
   active: boolean;
   mustChangePassword?: boolean;
   profilePhoto?: string | null;
-  failedAttempts?: number;
-  lockedUntil?: string | null;
-  createdAt?: string;
   lastLogin?: string | null;
-}
-
-export type DeadlineStatus = 'SAFE' | 'WARNING' | 'CRITICAL' | 'EXPIRED' | 'COMPLETED' | 'NO_DATE' | 'PENDING';
-
-export type ModuleType = 'RTH' | 'DENIED' | 'INPATIENT' | 'HD';
-
-export interface BaseRecord {
-  id: string;
-  module: ModuleType;
-  reference: string;
-  patientName?: string;
-  memberCategory?: string;
-  admittedDate?: string | null;
-  dischargedDate?: string | null;
-  claimAmount?: number;
-  totalCharges?: number;
-  deficiency?: string;
-  claimReceivedDate?: string | null;
-  noticeDate?: string | null;
-  expiryDate?: string | null;
-  baseDate?: string | null;
-  controlNumber?: string;
-  retrieved?: boolean;
-  completed?: boolean;
-  refiledDate?: string | null;
-  transmittedDate?: string | null;
-  transmittedBy?: string;
-  ownerUserId?: string | null;
-  remarks?: string;
-  daysLeft?: number | null;
-  status: DeadlineStatus;
-}
-
-export interface DashboardMetrics {
-  rthPending: number;
-  rthUrgent: number;
-  deniedPending: number;
-  inpatientPending: number;
-  hdPending: number;
-  totalUrgent: number;
-  urgentRows: BaseRecord[];
-}
-
-export interface NoticePdfRow {
-  index?: number;
-  noticeRowNo: number;
-  seriesNumber: string;
-  memberCategory: string;
-  patientName: string;
-  admitted: string;
-  discharged: string;
-  claimAmount: number;
-  totalCharges: number;
-  deficiency: string;
-  claimReceived: string;
-  controlNumber: string;
-  noticeDate: string;
-  deadline: string;
-  page: number;
-  duplicate?: boolean;
-  selected?: boolean;
-}
-
-export interface NoticePdfMeta {
-  page: number;
-  expectedCount: number | null;
-  controlNumber: string;
-  noticeDate: string;
-  deadline: string;
-}
-
-export interface NoticePdfPreviewResult {
-  importToken: string;
-  type: 'RTH' | 'DENIED';
-  filename: string;
-  notices: NoticePdfMeta[];
-  warnings: string[];
-  rows: NoticePdfRow[];
-  duplicateCount: number;
+  lockedUntil?: string | null;
+  failedAttempts?: number;
 }
 
 export interface AppSettings {
@@ -106,12 +28,88 @@ export interface AppSettings {
   DAILY_ALERT_HOUR: number;
 }
 
+export interface BaseRecord {
+  id: string;
+  module: ModuleType;
+  reference: string;
+  patientName: string;
+  memberCategory?: string;
+  admittedDate?: string;
+  admissionDate?: string;
+  dischargedDate?: string;
+  dischargeDate?: string;
+  claimAmount?: number;
+  totalCharges?: number;
+  deficiency?: string;
+  claimReceivedDate?: string;
+  noticeDate?: string;
+  expiryDate?: string;
+  baseDate?: string;
+  controlNumber?: string;
+  retrieved?: boolean;
+  completed?: boolean;
+  refiledDate?: string;
+  transmittedDate?: string;
+  transmittedBy?: string;
+  ownerUserId?: string;
+  remarks?: string;
+  daysLeft?: number | null;
+  status?: DeadlineStatus;
+}
+
+export interface NoticePdfMeta {
+  page: number;
+  expectedCount: number | null;
+  controlNumber: string;
+  noticeDate: string;
+  deadline: string;
+}
+
+export interface NoticePdfRow {
+  noticeRowNo: number;
+  seriesNumber: string;
+  memberCategory: string;
+  patientName: string;
+  admitted: string;
+  discharged: string;
+  claimAmount: number;
+  totalCharges: number;
+  deficiency: string;
+  claimReceived: string;
+  controlNumber: string;
+  noticeDate: string;
+  deadline: string;
+  page: number;
+  duplicate?: boolean;
+}
+
+export interface NoticePdfPreviewResult {
+  importToken: string;
+  type: 'RTH' | 'DENIED';
+  filename: string;
+  notices: NoticePdfMeta[];
+  rows: NoticePdfRow[];
+  warnings: string[];
+  duplicateCount: number;
+}
+
 export interface AuditLogItem {
-  id: number;
+  id: string;
   timestamp: string;
   username: string;
   action: string;
   module?: string;
+  row_ref?: string;
   source_ref?: string;
   details?: Record<string, any>;
+}
+
+export interface DashboardMetrics {
+  rthPending: number;
+  rthUrgent: number;
+  deniedPending: number;
+  inpatientPending: number;
+  hdPending: number;
+  totalUrgent: number;
+  urgentRows: BaseRecord[];
 }
