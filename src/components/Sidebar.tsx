@@ -50,7 +50,7 @@ export default function Sidebar({
           {/* Header Brand */}
           <div className="flex items-center gap-3 pb-4 border-b border-white/10">
             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center p-0.5 shadow-md shrink-0 overflow-hidden">
-              <img src="/logo.png" alt="Hospital Logo" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Hospital Logo" className="w-full h-full logo-circle" />
             </div>
             <div className="min-w-0">
               <h1 className="font-bold text-sm leading-tight truncate">Transmittal Monitor</h1>

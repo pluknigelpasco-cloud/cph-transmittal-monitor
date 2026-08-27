@@ -12,8 +12,52 @@ body {
   background-color: #f8fafc;
 }
 
+.logo-circle {
+  clip-path: circle(49% at 50% 50%);
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
 @media print {
+  @page {
+    size: landscape;
+    margin: 8mm;
+  }
+
   body {
-    background-color: #ffffff;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  aside,
+  header,
+  nav,
+  .print-hidden,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print-container-overlay {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .print-container-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .print-page-break {
+    page-break-after: always;
+    break-after: page;
   }
 }

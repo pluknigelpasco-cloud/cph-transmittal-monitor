@@ -18,25 +18,25 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
   const totalAmount = records.reduce((sum, r) => sum + (r.claimAmount || 0), 0);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-        {/* Modal Head (Hidden in Print) */}
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 print-container-overlay">
+      <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden print-container-card">
+        {/* Modal Head (Hidden during print) */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between print:hidden">
           <div>
-            <h3 className="text-base font-black text-slate-900">Print Transmittal Checklist</h3>
-            <p className="text-xs text-slate-500 font-medium">{records.length} selected record(s)</p>
+            <h3 className="text-base font-black text-slate-900">Print Transmittal Slip & Checklist</h3>
+            <p className="text-xs text-slate-500 font-medium">{records.length} claim(s) selected for printing</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="px-4 py-2 rounded-xl bg-brand-blue hover:bg-navy text-white text-xs font-bold shadow-md shadow-brand-blue/20 flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-navy text-white text-xs font-bold shadow-md shadow-brand-blue/20 flex items-center gap-2 cursor-pointer transition-all"
             >
               <Printer className="w-4 h-4" />
               Print Document
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50"
+              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -44,14 +44,19 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
         </div>
 
         {/* Printable Area */}
-        <div className="p-8 overflow-y-auto print:p-0">
-          <div className="flex items-center justify-center gap-6 pb-6 border-b-2 border-slate-900">
-            <img src="/logo.png" alt="Hospital Logo" className="w-20 h-20 object-contain shrink-0" />
+        <div className="p-8 sm:p-10 overflow-y-auto print:p-0 print:overflow-visible">
+          {/* Header */}
+          <div className="flex items-center justify-center gap-6 pb-5 border-b-2 border-slate-900">
+            <img
+              src="/logo.png"
+              alt="Hospital Logo"
+              className="w-20 h-20 logo-circle shrink-0"
+            />
             <div className="text-center">
-              <p className="text-xs uppercase font-bold text-slate-500 tracking-wider">Province of Cebu</p>
+              <p className="text-[11px] uppercase font-bold text-slate-500 tracking-wider">Province of Cebu</p>
               <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{HOSPITAL_NAME}</h2>
               <p className="text-xs font-bold text-slate-700">{SECTION_NAME}</p>
-              <h3 className="text-sm font-black text-brand-blue mt-2 uppercase tracking-wider">
+              <h3 className="text-sm font-black text-brand-blue mt-1 uppercase tracking-wider">
                 PHILHEALTH NOTICE TRANSMITTAL & COMPLIANCE REPORT
               </h3>
               <p className="text-[10px] text-slate-400 mt-0.5">
@@ -60,58 +65,62 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
             </div>
           </div>
 
-          <div className="mt-6 overflow-x-auto">
+          {/* Table */}
+          <div className="mt-6">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b-2 border-slate-900 text-[10px] uppercase font-black">
-                  <th className="py-2 px-3">No.</th>
-                  <th className="py-2 px-3">Series Number</th>
-                  <th className="py-2 px-3">Patient Name</th>
-                  <th className="py-2 px-3">Cat</th>
-                  <th className="py-2 px-3">Confinement</th>
-                  <th className="py-2 px-3 text-right">Claim Amount</th>
-                  <th className="py-2 px-3">Deficiency</th>
-                  <th className="py-2 px-3">Deadline</th>
+                <tr className="border-b-2 border-slate-900 text-[10px] uppercase font-black bg-slate-50 print:bg-transparent">
+                  <th className="py-2.5 px-3 w-10">No.</th>
+                  <th className="py-2.5 px-3">Series Number</th>
+                  <th className="py-2.5 px-3">Patient Name</th>
+                  <th className="py-2.5 px-3">Cat</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">Confinement</th>
+                  <th className="py-2.5 px-3 text-right">Claim Amount</th>
+                  <th className="py-2.5 px-3">Deficiency</th>
+                  <th className="py-2.5 px-3 whitespace-nowrap">Deadline</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-300 text-xs">
+              <tbody className="divide-y divide-slate-300">
                 {records.map((r, i) => (
-                  <tr key={r.id || i}>
+                  <tr key={r.id || i} className="align-top">
                     <td className="py-2 px-3 font-bold text-slate-500">{i + 1}</td>
-                    <td className="py-2 px-3 font-bold">{r.reference}</td>
-                    <td className="py-2 px-3 font-semibold">{r.patientName}</td>
-                    <td className="py-2 px-3">{r.memberCategory}</td>
-                    <td className="py-2 px-3 whitespace-nowrap">
+                    <td className="py-2 px-3 font-black text-slate-900 whitespace-nowrap">{r.reference}</td>
+                    <td className="py-2 px-3 font-bold text-slate-800">{r.patientName}</td>
+                    <td className="py-2 px-3 font-semibold text-slate-600">{r.memberCategory}</td>
+                    <td className="py-2 px-3 whitespace-nowrap text-slate-700">
                       {r.admittedDate} – {r.dischargedDate}
                     </td>
-                    <td className="py-2 px-3 text-right font-bold">₱{formatCurrency(r.claimAmount)}</td>
-                    <td className="py-2 px-3 text-[11px] max-w-xs">{r.deficiency}</td>
-                    <td className="py-2 px-3 font-bold whitespace-nowrap">{r.expiryDate}</td>
+                    <td className="py-2 px-3 text-right font-black text-slate-900 whitespace-nowrap">
+                      ₱{formatCurrency(r.claimAmount)}
+                    </td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700 leading-snug">{r.deficiency}</td>
+                    <td className="py-2 px-3 font-black text-slate-900 whitespace-nowrap">{r.expiryDate}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-slate-900 font-black text-xs">
+                <tr className="border-t-2 border-slate-900 font-black text-xs bg-slate-50/80 print:bg-transparent">
                   <td colSpan={5} className="py-3 px-3 uppercase text-right">
-                    Total Amount ({records.length} claims):
+                    Total Amount ({records.length} claim{records.length > 1 ? 's' : ''}):
                   </td>
-                  <td className="py-3 px-3 text-right">₱{formatCurrency(totalAmount)}</td>
+                  <td className="py-3 px-3 text-right text-sm">₱{formatCurrency(totalAmount)}</td>
                   <td colSpan={2}></td>
                 </tr>
               </tfoot>
             </table>
           </div>
 
-          <div className="grid grid-cols-2 gap-12 mt-12 pt-8 border-t border-slate-200 text-xs">
+          {/* Signatures */}
+          <div className="grid grid-cols-2 gap-16 mt-12 pt-8 border-t border-slate-300 text-xs">
             <div>
-              <p className="font-bold text-slate-600 mb-8">Prepared / Transmitted By:</p>
-              <div className="border-b border-slate-900 w-48" />
-              <p className="text-[10px] text-slate-500 mt-1 font-medium">PhilHealth Billing Staff</p>
+              <p className="font-bold text-slate-700 mb-10">Prepared / Transmitted By:</p>
+              <div className="border-b border-slate-900 w-56" />
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold">PhilHealth Billing Staff / Transmitter</p>
             </div>
             <div>
-              <p className="font-bold text-slate-600 mb-8">Noted / Received By:</p>
-              <div className="border-b border-slate-900 w-48" />
-              <p className="text-[10px] text-slate-500 mt-1 font-medium">PhilHealth Section Head / Liaison</p>
+              <p className="font-bold text-slate-700 mb-10">Noted / Received By:</p>
+              <div className="border-b border-slate-900 w-56" />
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold">PhilHealth Section Head / Liaison</p>
             </div>
           </div>
         </div>
