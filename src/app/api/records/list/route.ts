@@ -1,34 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
-import { getTokenFromRequest, verifyToken } from '@/lib/auth';
-import { BaseRecord, ModuleType, AppSettings, DeadlineStatus } from '@/lib/types';
-import { calendarDaysDiff, computeDeadlineStatus, DEFAULT_SETTINGS, formatDate, isDateInRange } from '@/lib/calculations';
+import { verifyToken, getTokenFromRequest } from '@/lib/auth';
+import { ModuleType, BaseRecord } from '@/lib/types';
+import {
+  formatDate,
+  calendarDaysDiff,
+  computeDeadlineStatus,
+  isDateInRange,
+  DEFAULT_SETTINGS
+} from '@/lib/calculations';
 
 export async function POST(req: NextRequest) {
   try {
     const token = getTokenFromRequest(req);
     const payload = verifyToken(token);
-    if (!payload) return NextResponse.json({ ok: false, error: 'SESSION_EXPIRED' }, { status: 401 });
+    if (!payload) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized session' }, { status: 401 });
+    }
 
     const body = await req.json();
-    const module = (body.module || 'RTH').toUpperCase() as ModuleType;
+    const module = (body.module || 'RTH') as ModuleType;
     const search = String(body.search || '').trim().toLowerCase();
     const status = String(body.status || 'ALL').toUpperCase();
+    const offset = Math.max(0, Number(body.offset) || 0);
+    const limit = Math.min(500, Math.max(10, Number(body.limit) || 250));
     const sortKey = String(body.sortKey || 'daysLeft');
     const sortDir = String(body.sortDir || 'asc').toLowerCase();
-    const offset = Math.max(0, Number(body.offset) || 0);
-    const limit = Math.min(200, Math.max(25, Number(body.limit) || 50));
 
     const supabase = getSupabaseAdmin();
 
     // Fetch settings
     const { data: settingsRows } = await supabase.from('app_settings').select('*');
-    const settings: AppSettings = { ...DEFAULT_SETTINGS };
-    settingsRows?.forEach(r => {
-      if (r.key in settings) {
+    const settings = { ...DEFAULT_SETTINGS };
+    if (settingsRows) {
+      settingsRows.forEach(r => {
         (settings as any)[r.key] = isNaN(Number(r.value)) ? r.value : Number(r.value);
-      }
-    });
+      });
+    }
 
     const today = new Date();
     let records: BaseRecord[] = [];
@@ -39,21 +47,25 @@ export async function POST(req: NextRequest) {
         const expiry = r.expiry_date ? new Date(r.expiry_date) : null;
         const daysLeft = expiry ? calendarDaysDiff(today, expiry) : null;
         const s = computeDeadlineStatus(daysLeft, r.refiled, settings);
+        const admitted = formatDate(r.admitted_date);
+        const discharged = formatDate(r.discharged_date);
         return {
           id: r.id,
           module: 'RTH',
           reference: r.series_number,
           patientName: r.patient_name,
           memberCategory: r.member_category,
-          admittedDate: formatDate(r.admitted_date),
-          dischargedDate: formatDate(r.discharged_date),
+          admittedDate: admitted,
+          admissionDate: admitted,
+          dischargedDate: discharged,
+          dischargeDate: discharged,
           claimAmount: Number(r.claim_amount || 0),
           totalCharges: Number(r.total_charges || 0),
           deficiency: r.deficiency,
           claimReceivedDate: formatDate(r.claim_received_date),
           noticeDate: formatDate(r.notice_date),
           expiryDate: formatDate(r.expiry_date),
-          baseDate: formatDate(r.claim_received_date),
+          baseDate: formatDate(r.notice_date || r.claim_received_date),
           controlNumber: r.control_number,
           retrieved: r.retrieved,
           completed: r.refiled,
@@ -72,21 +84,25 @@ export async function POST(req: NextRequest) {
         const expiry = r.expiry_date ? new Date(r.expiry_date) : null;
         const daysLeft = expiry ? calendarDaysDiff(today, expiry) : null;
         const s = computeDeadlineStatus(daysLeft, r.retrieved, settings);
+        const admitted = formatDate(r.admitted_date);
+        const discharged = formatDate(r.discharged_date);
         return {
           id: r.id,
           module: 'DENIED',
           reference: r.series_number,
           patientName: r.patient_name,
           memberCategory: r.member_category,
-          admittedDate: formatDate(r.admitted_date),
-          dischargedDate: formatDate(r.discharged_date),
+          admittedDate: admitted,
+          admissionDate: admitted,
+          dischargedDate: discharged,
+          dischargeDate: discharged,
           claimAmount: Number(r.claim_amount || 0),
           totalCharges: Number(r.total_charges || 0),
           deficiency: r.deficiency,
           claimReceivedDate: formatDate(r.claim_received_date),
           noticeDate: formatDate(r.notice_date),
           expiryDate: formatDate(r.expiry_date),
-          baseDate: formatDate(r.claim_received_date),
+          baseDate: formatDate(r.claim_received_date || r.notice_date),
           controlNumber: r.control_number,
           retrieved: r.retrieved,
           completed: r.retrieved,
@@ -106,15 +122,17 @@ export async function POST(req: NextRequest) {
         const daysLeft = expiry ? calendarDaysDiff(today, expiry) : null;
         const s = computeDeadlineStatus(daysLeft, r.completed, settings);
         const catList = r.categories && r.categories.length ? r.categories.join(', ') : 'Inpatient';
+        const dDate = formatDate(r.discharge_date);
         return {
           id: r.id,
           module: 'INPATIENT',
-          reference: formatDate(r.discharge_date),
+          reference: dDate,
           patientName: '',
           memberCategory: catList,
           deficiency: catList,
-          baseDate: formatDate(r.discharge_date),
-          dischargeDate: formatDate(r.discharge_date),
+          baseDate: dDate,
+          dischargeDate: dDate,
+          dischargedDate: dDate,
           expiryDate: formatDate(r.expiry_date),
           completed: r.completed,
           transmittedDate: formatDate(r.transmitted_date),
@@ -129,15 +147,17 @@ export async function POST(req: NextRequest) {
         const expiry = r.expiry_date ? new Date(r.expiry_date) : null;
         const daysLeft = expiry ? calendarDaysDiff(today, expiry) : null;
         const s = computeDeadlineStatus(daysLeft, r.completed, settings);
+        const encDate = formatDate(r.encounter_date);
         return {
           id: r.id,
           module: 'HD',
-          reference: formatDate(r.encounter_date),
+          reference: encDate,
           patientName: '',
           memberCategory: r.is_hdu ? 'HDU' : 'Hemodialysis',
           deficiency: r.is_hdu ? 'HDU' : 'Hemodialysis',
-          baseDate: formatDate(r.encounter_date),
-          admittedDate: formatDate(r.encounter_date),
+          baseDate: encDate,
+          admittedDate: encDate,
+          admissionDate: encDate,
           expiryDate: formatDate(r.expiry_date),
           completed: r.completed,
           transmittedDate: formatDate(r.transmitted_date),
@@ -179,12 +199,11 @@ export async function POST(req: NextRequest) {
 
     // Date range filters
     records = records.filter(r => {
-      return (
-        isDateInRange(r.admittedDate, body.admissionFrom, body.admissionTo) &&
-        isDateInRange(r.dischargedDate, body.dischargeFrom, body.dischargeTo) &&
-        isDateInRange(r.transmittedDate, body.transmittedFrom, body.transmittedTo) &&
-        isDateInRange(r.expiryDate, body.expiryFrom, body.expiryTo)
-      );
+      const matchAdm = isDateInRange(r.admittedDate || r.admissionDate, body.admissionFrom, body.admissionTo);
+      const matchDis = isDateInRange(r.dischargedDate || r.dischargeDate, body.dischargeFrom, body.dischargeTo);
+      const matchTrn = isDateInRange(r.transmittedDate, body.transmittedFrom, body.transmittedTo);
+      const matchExp = isDateInRange(r.expiryDate, body.expiryFrom, body.expiryTo);
+      return matchAdm && matchDis && matchTrn && matchExp;
     });
 
     // Status filter
