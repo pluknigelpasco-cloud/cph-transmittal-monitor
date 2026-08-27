@@ -123,7 +123,7 @@ export default function AuthShell({ onLoginSuccess }: AuthShellProps) {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-black text-white">Aliwanay, Balamban, Cebu</p>
+                  <p className="text-xs font-black text-white">Pilapil St., Balamban, Cebu</p>
                   <p className="text-[10px] text-sky-200 font-medium">GPS: 10.4938° N, 123.7100° E</p>
                 </div>
               </div>
