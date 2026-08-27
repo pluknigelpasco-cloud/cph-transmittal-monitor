@@ -1,6 +1,7 @@
 import { NoticePdfMeta, NoticePdfRow } from './types';
 import { formatDate } from './calculations';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
+import 'pdfjs-dist/legacy/build/pdf.worker.js';
 
 function cleanText(str?: string | null, maxLen = 1000): string {
   return String(str || '')
@@ -31,6 +32,7 @@ async function extractTextFromPdfBuffer(buffer: Buffer): Promise<string> {
     data: uint8Array,
     useSystemFonts: true,
     disableFontFace: true,
+    verbosity: 0,
   });
   const doc = await loadingTask.promise;
   let fullText = '';
