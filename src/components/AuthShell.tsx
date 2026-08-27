@@ -49,9 +49,12 @@ export default function AuthShell({ onLoginSuccess }: AuthShellProps) {
         <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full border-[50px] border-white/5 pointer-events-none" />
 
         {/* Brand Header */}
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center p-1 shadow-xl overflow-hidden shrink-0">
-            <img src="/logo.png" alt="Hospital Logo" className="w-full h-full logo-circle" />
+        <div className="flex items-center gap-3.5 relative z-10">
+          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center p-0.5 shadow-xl overflow-hidden shrink-0 ring-2 ring-white/30">
+            <img src="/cebu_seal.png" alt="Province of Cebu Seal" className="w-full h-full object-contain" />
+          </div>
+          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center p-0.5 shadow-xl overflow-hidden shrink-0 ring-2 ring-white/30">
+            <img src="/cph_logo.png" alt="Hospital Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <h2 className="text-lg font-black tracking-tight">{HOSPITAL_NAME}</h2>

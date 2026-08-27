@@ -45,24 +45,29 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
 
         {/* Printable Area */}
         <div className="p-8 sm:p-10 overflow-y-auto print:p-0 print:overflow-visible">
-          {/* Header */}
-          <div className="flex items-center justify-center gap-6 pb-5 border-b-2 border-slate-900">
+          {/* Header (Dual Official Seals) */}
+          <div className="flex items-center justify-between gap-4 pb-5 border-b-2 border-slate-900">
             <img
-              src="/logo.png"
-              alt="Hospital Logo"
-              className="w-20 h-20 logo-circle shrink-0"
+              src="/cebu_seal.png"
+              alt="Province of Cebu Seal"
+              className="w-20 h-20 object-contain shrink-0"
             />
-            <div className="text-center">
-              <p className="text-[11px] uppercase font-bold text-slate-500 tracking-wider">Province of Cebu</p>
-              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{HOSPITAL_NAME}</h2>
+            <div className="text-center flex-1">
+              <p className="text-[11px] uppercase font-bold text-slate-500 tracking-widest">Republic of the Philippines · Province of Cebu</p>
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight mt-0.5">{HOSPITAL_NAME}</h2>
               <p className="text-xs font-bold text-slate-700">{SECTION_NAME}</p>
-              <h3 className="text-sm font-black text-brand-blue mt-1 uppercase tracking-wider">
+              <h3 className="text-sm font-black text-brand-blue mt-1.5 uppercase tracking-wider">
                 PHILHEALTH NOTICE TRANSMITTAL & COMPLIANCE REPORT
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">
+              <p className="text-[10px] text-slate-400 mt-0.5 font-semibold">
                 Generated on {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
+            <img
+              src="/cph_logo.png"
+              alt="CPH Balamban Hospital Seal"
+              className="w-20 h-20 object-contain shrink-0"
+            />
           </div>
 
           {/* Table */}
