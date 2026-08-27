@@ -2,7 +2,7 @@ import { NoticePdfMeta, NoticePdfRow } from './types';
 import { formatDate } from './calculations';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
 
-function cleanText(str: string, maxLen = 1000): string {
+function cleanText(str?: string | null, maxLen = 1000): string {
   return String(str || '')
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' ')
     .replace(/\s+/g, ' ')
@@ -10,12 +10,12 @@ function cleanText(str: string, maxLen = 1000): string {
     .slice(0, maxLen);
 }
 
-function parseAmount(val: string | number): number {
+function parseAmount(val?: string | number | null): number {
   const num = Number(String(val || '').replace(/,/g, ''));
   return Number.isFinite(num) ? num : 0;
 }
 
-function normalizePdfDate(val: string): string {
+function normalizePdfDate(val?: string | null): string {
   if (!val) return '';
   const d = new Date(String(val).replace(/(\w{3})\s+(\d{1,2})\s+(\d{4})/, '$1 $2, $3'));
   if (isNaN(d.getTime())) return String(val).trim();
