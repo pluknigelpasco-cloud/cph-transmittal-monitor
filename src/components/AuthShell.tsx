@@ -80,20 +80,20 @@ export default function AuthShell({ onLoginSuccess }: AuthShellProps) {
 
         {/* Brand Header */}
         <div className="flex items-center justify-between gap-4 relative z-10 pb-4 border-b border-white/10">
-          <div className="flex items-center gap-3.5">
-            <div className="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-white flex items-center justify-center p-1 shadow-2xl overflow-hidden shrink-0 ring-2 ring-white/40">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center p-0.5 shadow-xl overflow-hidden shrink-0 ring-2 ring-white/40">
               <img src="/cebu_seal.png" alt="Province of Cebu Seal" className="w-full h-full object-contain" />
             </div>
-            <div className="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-white flex items-center justify-center p-1 shadow-2xl overflow-hidden shrink-0 ring-2 ring-white/40">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center p-0.5 shadow-xl overflow-hidden shrink-0 ring-2 ring-white/40">
               <img src="/cph_logo.png" alt="Hospital Logo" className="w-full h-full object-contain" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="text-base sm:text-lg font-black tracking-tight leading-tight">{HOSPITAL_NAME}</h2>
               <p className="text-[11px] sm:text-xs text-sky-200 font-semibold">{SECTION_NAME} · Province of Cebu</p>
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-black backdrop-blur-md">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-black backdrop-blur-md shrink-0">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             System Live
           </div>

@@ -66,8 +66,8 @@ export default function Sidebar({
           {/* Header Brand */}
           <div className="flex items-center justify-between pb-4 pt-1 border-b border-white/10">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center p-0.5 shadow-lg shrink-0 overflow-hidden ring-2 ring-white/20">
-                <img src="/logo.png" alt="Hospital Logo" className="w-full h-full logo-circle" />
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center p-0.5 shadow-lg shrink-0 overflow-hidden ring-2 ring-white/20">
+                <img src="/cph_logo.png" alt="Hospital Logo" className="w-full h-full object-contain" />
               </div>
               {!isCollapsed && (
                 <div className="min-w-0 transition-opacity duration-200">
