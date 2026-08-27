@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Menu, RefreshCw, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import ThemeSelector from './ThemeSelector';
 
 interface TopbarProps {
   title: string;
@@ -39,7 +40,7 @@ export default function Topbar({
         {onToggleSidebar && (
           <button
             onClick={onToggleSidebar}
-            className="hidden lg:flex p-2 rounded-xl border border-slate-200/80 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
+            className="hidden lg:flex p-2 rounded-xl border border-slate-200/80 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
             title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isSidebarCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
@@ -52,12 +53,15 @@ export default function Topbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Live Theme Switcher */}
+        <ThemeSelector />
+
         {onRefresh && (
           <button
             onClick={onRefresh}
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all disabled:opacity-50 shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all disabled:opacity-50 shadow-sm cursor-pointer"
             title="Refresh records"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-brand-blue' : ''}`} />
