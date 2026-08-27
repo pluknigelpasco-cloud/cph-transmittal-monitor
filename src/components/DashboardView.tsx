@@ -61,7 +61,7 @@ export default function DashboardView({ metrics, user, onNavigateModule }: Dashb
     <div className="space-y-6">
       {/* Dynamic Welcome Hero with Hide/Show toggle */}
       {showBanner ? (
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-navy via-navy to-brand-blue text-white p-6 sm:p-8 shadow-xl shadow-blue-950/15 border border-white/10 transition-all">
+        <section className="relative overflow-hidden rounded-3xl theme-hero text-white p-6 sm:p-8 shadow-xl shadow-blue-950/15 border border-white/10 transition-all">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
             <div className="max-w-3xl">
               <div className="flex items-center gap-2 mb-2">
