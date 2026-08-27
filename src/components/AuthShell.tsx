@@ -50,8 +50,8 @@ export default function AuthShell({ onLoginSuccess }: AuthShellProps) {
 
         {/* Brand Header */}
         <div className="flex items-center gap-4 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center p-2 shadow-xl">
-            <Hospital className="w-8 h-8 text-brand-blue" />
+          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center p-1 shadow-xl overflow-hidden shrink-0">
+            <img src="/logo.png" alt="Hospital Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <h2 className="text-lg font-black tracking-tight">{HOSPITAL_NAME}</h2>

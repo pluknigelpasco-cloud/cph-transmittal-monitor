@@ -45,16 +45,19 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
 
         {/* Printable Area */}
         <div className="p-8 overflow-y-auto print:p-0">
-          <div className="text-center pb-6 border-b-2 border-slate-900">
-            <p className="text-xs uppercase font-bold text-slate-500 tracking-wider">Province of Cebu</p>
-            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{HOSPITAL_NAME}</h2>
-            <p className="text-xs font-bold text-slate-700">{SECTION_NAME}</p>
-            <h3 className="text-sm font-black text-brand-blue mt-3 uppercase tracking-wider">
-              PHILHEALTH NOTICE TRANSMITTAL & COMPLIANCE REPORT
-            </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5">
-              Generated on {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-            </p>
+          <div className="flex items-center justify-center gap-6 pb-6 border-b-2 border-slate-900">
+            <img src="/logo.png" alt="Hospital Logo" className="w-20 h-20 object-contain shrink-0" />
+            <div className="text-center">
+              <p className="text-xs uppercase font-bold text-slate-500 tracking-wider">Province of Cebu</p>
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{HOSPITAL_NAME}</h2>
+              <p className="text-xs font-bold text-slate-700">{SECTION_NAME}</p>
+              <h3 className="text-sm font-black text-brand-blue mt-2 uppercase tracking-wider">
+                PHILHEALTH NOTICE TRANSMITTAL & COMPLIANCE REPORT
+              </h3>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                Generated on {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </div>
           </div>
 
           <div className="mt-6 overflow-x-auto">
