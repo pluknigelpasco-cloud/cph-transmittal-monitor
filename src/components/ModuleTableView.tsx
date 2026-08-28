@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Printer, Trash2, ArrowUpDown, RefreshCw, Calendar, Check, Undo2 } from 'lucide-react';
+import { Search, Printer, Trash2, ArrowUpDown, RefreshCw, MessageSquare } from 'lucide-react';
 import { BaseRecord, ModuleType, AppUser } from '@/lib/types';
 import { useToast } from './Toast';
 import { formatCurrency } from '@/lib/calculations';
@@ -211,7 +211,7 @@ export default function ModuleTableView({
             <button
               onClick={fetchRecords}
               disabled={loading}
-              className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+              className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
               title="Refresh table"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-brand-blue' : ''}`} />
@@ -227,7 +227,7 @@ export default function ModuleTableView({
               value={search}
               onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && fetchRecords()}
-              placeholder="Search date, deficiency, remarks…"
+              placeholder="Search date, patient, deficiency, remarks…"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-brand-blue placeholder:text-slate-400"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
@@ -261,7 +261,7 @@ export default function ModuleTableView({
             ) : (
               <button
                 onClick={fetchRecords}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all"
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all cursor-pointer"
               >
                 Apply Filters
               </button>
@@ -323,9 +323,9 @@ export default function ModuleTableView({
 
       {/* Main Table */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto max-h-[680px]">
-          <table className="w-full text-left border-collapse min-w-[1000px]">
-            <thead className="sticky top-0 bg-slate-50/90 backdrop-blur-md border-b border-slate-200 text-[10px] font-black uppercase text-slate-500 z-10">
+        <div className="overflow-x-auto max-h-[700px]">
+          <table className="w-full text-left border-collapse min-w-[1200px]">
+            <thead className="sticky top-0 bg-slate-50/95 backdrop-blur-md border-b border-slate-200 text-[10px] font-black uppercase text-slate-500 z-10">
               <tr>
                 {isNoticeModule && (
                   <th className="py-3.5 px-4 w-12">
@@ -383,7 +383,13 @@ export default function ModuleTableView({
                   </button>
                 </th>
                 <th className="py-3.5 px-4">Status</th>
-                {isNoticeModule && <th className="py-3.5 px-4">Transmitter</th>}
+                {isNoticeModule && <th className="py-3.5 px-4 min-w-[140px]">Transmitter</th>}
+                <th className="py-3.5 px-4 min-w-[200px]">
+                  <span className="flex items-center gap-1">
+                    <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
+                    Remarks
+                  </span>
+                </th>
                 <th className="py-3.5 px-4 text-center">Action</th>
                 {user.role === 'ADMIN' && isNoticeModule && <th className="py-3.5 px-4 text-right">Delete</th>}
               </tr>
@@ -391,7 +397,7 @@ export default function ModuleTableView({
             <tbody className="divide-y divide-slate-100 text-xs">
               {records.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="py-16 text-center text-slate-400 font-bold">
+                  <td colSpan={12} className="py-16 text-center text-slate-400 font-bold">
                     {loading ? 'Loading records…' : 'No records found matching filters.'}
                   </td>
                 </tr>
@@ -482,7 +488,7 @@ export default function ModuleTableView({
                             value={r.ownerUserId || ''}
                             disabled={user.role === 'VIEWER'}
                             onChange={e => updateRecord(r.id, { transmittedByUserId: e.target.value })}
-                            className="px-2 py-1 rounded-lg border border-slate-200 text-xs font-semibold bg-white text-slate-800 focus:ring-1 focus:ring-brand-blue"
+                            className="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-semibold bg-white text-slate-800 focus:ring-1 focus:ring-brand-blue"
                           >
                             <option value="">Unassigned</option>
                             {transmitters.map(t => (
@@ -494,6 +500,30 @@ export default function ModuleTableView({
                         </td>
                       )}
 
+                      {/* Interactive Remarks Field */}
+                      <td className="py-2.5 px-3 min-w-[200px]">
+                        <input
+                          type="text"
+                          key={`remarks-${r.id}-${r.remarks || ''}`}
+                          defaultValue={r.remarks || ''}
+                          disabled={user.role === 'VIEWER'}
+                          placeholder="Add remarks…"
+                          onBlur={e => {
+                            const val = e.target.value.trim();
+                            if (val !== (r.remarks || '')) {
+                              updateRecord(r.id, { remarks: val });
+                            }
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              (e.target as HTMLInputElement).blur();
+                            }
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-xs text-slate-800 bg-white placeholder:text-slate-400 placeholder:italic transition-all"
+                          title={r.remarks ? `Remarks: ${r.remarks}` : 'Type remarks and press Enter or click outside to save'}
+                        />
+                      </td>
+
                       {/* Checklist Actions */}
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-2">
@@ -503,7 +533,7 @@ export default function ModuleTableView({
                                 type="button"
                                 disabled={user.role === 'VIEWER'}
                                 onClick={() => updateRecord(r.id, { retrieved: !r.retrieved })}
-                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors ${
+                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
                                   r.retrieved
                                     ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
                                     : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
@@ -515,7 +545,7 @@ export default function ModuleTableView({
                                 type="button"
                                 disabled={user.role === 'VIEWER'}
                                 onClick={() => updateRecord(r.id, { completed: !r.completed })}
-                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors ${
+                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
                                   r.completed
                                     ? 'bg-blue-50 text-brand-blue border-blue-300'
                                     : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
@@ -531,7 +561,7 @@ export default function ModuleTableView({
                               type="button"
                               disabled={user.role === 'VIEWER'}
                               onClick={() => updateRecord(r.id, { retrieved: !r.retrieved })}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors ${
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
                                 r.retrieved
                                   ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
                                   : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
@@ -548,18 +578,11 @@ export default function ModuleTableView({
                               onClick={() => updateRecord(r.id, { completed: !isCompleted })}
                               className={`px-3 py-1.5 rounded-xl text-[11px] font-black border transition-all cursor-pointer ${
                                 isCompleted
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 flex items-center gap-1'
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
                                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 shadow-sm'
                               }`}
                             >
-                              {isCompleted ? (
-                                <>
-                                  <Undo2 className="w-3.5 h-3.5" />
-                                  Undo Transmitted
-                                </>
-                              ) : (
-                                'Mark Transmitted'
-                              )}
+                              {isCompleted ? '✓ Undo Transmitted' : 'Mark Transmitted'}
                             </button>
                           )}
                         </div>
@@ -571,7 +594,7 @@ export default function ModuleTableView({
                           <button
                             type="button"
                             onClick={() => deleteRecord(r.id, r.patientName || r.reference)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
                             title="Delete notice permanently"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

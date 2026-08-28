@@ -83,6 +83,7 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
                   <th className="py-2.5 px-3 text-right">Claim Amount</th>
                   <th className="py-2.5 px-3">Deficiency</th>
                   <th className="py-2.5 px-3 whitespace-nowrap">Deadline</th>
+                  <th className="py-2.5 px-3">Remarks</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-300">
@@ -100,6 +101,7 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
                     </td>
                     <td className="py-2 px-3 text-[11px] text-slate-700 leading-snug">{r.deficiency}</td>
                     <td className="py-2 px-3 font-black text-slate-900 whitespace-nowrap">{r.expiryDate}</td>
+                    <td className="py-2 px-3 text-[11px] text-slate-700 italic">{r.remarks || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -109,7 +111,7 @@ export default function PrintNoticeModal({ records, onClose }: PrintNoticeModalP
                     Total Amount ({records.length} claim{records.length > 1 ? 's' : ''}):
                   </td>
                   <td className="py-3 px-3 text-right text-sm">₱{formatCurrency(totalAmount)}</td>
-                  <td colSpan={2}></td>
+                  <td colSpan={3}></td>
                 </tr>
               </tfoot>
             </table>
