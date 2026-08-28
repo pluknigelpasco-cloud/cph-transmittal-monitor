@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
           transmittedDate: formatDate(r.refiled_date),
           transmittedBy: r.transmitted_by,
           ownerUserId: r.owner_user_id,
-          remarks: r.remarks,
+          remarks: r.remarks && !r.remarks.startsWith('Historical Import') ? r.remarks : '',
           daysLeft,
           status: s,
         };
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
           transmittedDate: formatDate(r.refiled_date),
           transmittedBy: r.transmitted_by,
           ownerUserId: r.owner_user_id,
-          remarks: r.remarks,
+          remarks: r.remarks && !r.remarks.startsWith('Historical Import') ? r.remarks : '',
           daysLeft,
           status: s,
         };
